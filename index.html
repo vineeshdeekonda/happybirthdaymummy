@@ -119,24 +119,44 @@
     }
 
     /* homepage layout */
-    .home-grid{display:flex;flex-direction:column;gap:16px}
-    .interactive-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;justify-content:center}
+    .home-grid{display:flex;flex-direction:column;gap:12px}
+    .interactive-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center}
+    .cake-wrap{display:flex;flex-direction:column;align-items:center;user-select:none}
+    .cake-caption{margin-top:10px;color:var(--muted)}
 
-    /* cake */
-    .cake-wrap{display:flex;flex-direction:column;align-items:center;cursor:pointer}
-    .cake-caption{font-size:0.9rem;color:var(--muted);margin-top:8px}
-
-    /* present */
-    .present-btn{background:white;border-radius:14px;padding:16px;display:flex;flex-direction:column;align-items:center;box-shadow:0 12px 30px rgba(0,0,0,0.06);cursor:pointer}
-
-    /* modal */
-    .modal{
-      position:fixed;left:0;top:0;width:100%;height:100%;
-      display:flex;align-items:center;justify-content:center;
-      background:rgba(0,0,0,0.6);z-index:60;
+    /* candle (checkbox hack) */
+    .candle-ctrl { display:none; }
+    .candle {
+      display:inline-block; cursor:pointer;
     }
-    .modal-content{width:92%;max-width:900px;background:white;border-radius:12px;padding:12px}
+    .flame {
+      transform-origin:center bottom;
+      transition:opacity .18s ease, transform .18s ease;
+      transform:translateY(0) scaleY(1);
+    }
+    /* when checkbox is checked -> hide flame (blown out) */
+    .candle-ctrl:checked + label .flame { opacity:0; transform:translateY(-6px) scaleY(.6); }
 
+    .smoke {
+      display:inline-block;
+      opacity:0;
+      transform:translateY(0) scale(0.8);
+      transition:opacity .35s ease, transform .35s ease;
+    }
+    /* show a quick smoke when box checked */
+    .candle-ctrl:checked + label .smoke { opacity:1; transform:translateY(-14px) scale(1.1); }
+
+       /* present button */
+    .present { display:inline-flex;flex-direction:column;align-items:center;padding:14px;border-radius:12px;background:white;box-shadow:0 12px 30px rgba(0,0,0,0.06);cursor:pointer }
+
+    /* modal via checkbox */
+    .modal-ctrl { display:none; }
+    .modal {
+      position:fixed;left:0;top:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+      background:rgba(0,0,0,0.65); padding:12px; z-index:80;
+    }
+    .modal .box { background:white;border-radius:12px;padding:10px;width:100%;max-width:940px;box-shadow:0 18px 40px rgba(0,0,0,0.2) }
+    
     /* carousel */
     .carousel{position:relative;overflow:hidden;border-radius:12px}
     .carousel img{width:100%;height:360px;object-fit:cover;display:block}
@@ -192,51 +212,56 @@
       </nav>
     </header>
 
-    <main>
+  <main>
       <div class="container">
-        <!-- HOME -->
-        <section id="home" class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
-            <div>
-              <h2 style="margin:0;color:var(--accent)">Our Personal Message</h2>
-              <p class="muted">Mummy, you are our sunshine. Click anywhere on the screen for fireworks. Try clicking the cake and opening the present!</p>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center">
-              <small class="muted">Tip: If audio doesn't autoplay, press Play</small>
-            </div>
-          </div>
 
-          <div class="home-grid" style="margin-top:16px;align-items:center">
-            <div style="flex:1;min-width:260px">
-              <div class="cake-wrap" id="cake" title="Click the cake to blow out the candle" role="button">
-                <!-- simple cake SVG -->
-                <svg id="cakeSVG" width="260" height="240" viewBox="0 0 260 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <g transform="translate(8,8)">
-                    <rect x="16" y="100" width="220" height="90" rx="16" fill="#ffdbe9" stroke="#ffb6d9" stroke-width="3"/>
-                    <rect x="42" y="70" width="176" height="40" rx="12" fill="#fff6f9" stroke="#ffdbe6" stroke-width="2"/>
-                    <!-- candle -->
-                    <rect id="candleStem" x="125" y="36" width="6" height="34" rx="2" fill="#fff"/>
-                    <g id="flame">
-                      <ellipse cx="128" cy="28" rx="8" ry="14" fill="#ffb74d"/>
-                      <ellipse cx="128" cy="24" rx="4" ry="9" fill="#fff3b0"/>
-                    </g>
-                    <g id="smoke" style="display:none">
-                      <text x="112" y="26" font-size="18">💨</text>
-                    </g>
-                  </g>
-                </svg>
-                <div class="cake-caption">Click the cake to blow the candle out</div>
-              </div>
-            </div>
+        <!-- HOME (visible when #tab-home checked) -->
+        <section class="card" aria-labelledby="home-title"
+                 style="display:block"
+                 >
+          <!-- CSS-only visibility: rely on :checked style in browsers where the radio is checked.
+               For clarity we keep sections visible/hidden via CSS pseudo selectors below. -->
+          <div id="home-content">
+            <h2 id="home-title" style="margin:0;color:var(--accent)">Our Personal Message</h2>
+            <p style="color:var(--muted);margin-top:6px">Mummy, you are our sunshine. Click the candle to blow it out. Open the present to watch the surprise video.</p>
 
-            <div style="flex:1;min-width:260px;display:flex;flex-direction:column;align-items:center;gap:12px">
-              <div class="present-btn" id="presentBtn" title="Open present">
-                <div style="font-size:48px">🎁</div>
-                <div style="margin-top:8px;font-weight:700;color:var(--muted)">Open Present</div>
+            <div class="home-grid" style="margin-top:14px;align-items:center">
+              <div style="flex:1;min-width:240px">
+                <!-- Candle uses checkbox hack: checked => flame hidden (blown out) -->
+                <input type="checkbox" id="candleBox" class="candle-ctrl" />
+                <label for="candleBox" class="candle" title="Click to blow out the candle (stays out)">
+                  <!-- Cake SVG simplified -->
+                  <svg width="260" height="240" viewBox="0 0 260 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <g transform="translate(8,8)">
+                      <rect x="16" y="100" width="220" height="90" rx="16" fill="#ffdbe9" stroke="#ffb6d9" stroke-width="3"/>
+                      <rect x="42" y="70" width="176" height="40" rx="12" fill="#fff6f9" stroke="#ffdbe6" stroke-width="2"/>
+                      <!-- candle stem -->
+                      <rect x="125" y="36" width="6" height="34" rx="2" fill="#fff"/>
+                      <!-- flame (hidden when checkbox checked) -->
+                      <g class="flame">
+                        <ellipse cx="128" cy="24" rx="8" ry="14" fill="#ffb74d"/>
+                        <ellipse cx="128" cy="20" rx="4" ry="8" fill="#fff3b0"/>
+                      </g>
+                      <!-- smoke shown when checked: use CSS sibling selector to show small emoji above -->
+                      <g class="smoke" transform="translate(0,0)">
+                        <text x="112" y="26" font-size="18">💨</text>
+                      </g>
+                    </g>
+                  </svg>
+                </label>
+
+                <div class="cake-caption">Click the cake to blow the candle out (it will stay out).</div>
               </div>
 
-              <div style="width:100%;text-align:center;margin-top:6px;">
-                <small class="muted">With love from Vineesh and Sudeepti</small>
+              <div style="flex:1;min-width:240px;display:flex;flex-direction:column;align-items:center;gap:12px">
+                <!-- Present: uses checkbox to toggle modal open (pure HTML) -->
+                <input type="checkbox" id="presentBox" class="modal-ctrl" />
+                <label for="presentBox" class="present" title="Open present — plays your uploaded present.mp4">
+                  <div style="font-size:46px">🎁</div>
+                  <div style="margin-top:8px;font-weight:700;color:var(--muted)">Open Present</div>
+                </label>
+
+                <div style="width:100%;text-align:center;margin-top:6px;color:var(--accent);font-weight:700">With love from Vineesh and Sudeepti</div>
               </div>
             </div>
           </div>
