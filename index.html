@@ -1,660 +1,282 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Happy Birthday, Mummy 🎉</title>
-  <style>
-    :root{
-      --bg:#fff0f6;
-      --pink:#ff7fbf;
-      --muted:#6b6b6b;
-      --card:#ffffffcc;
-      --accent:#ff6fa3;
-      --radius:18px;
-      --max-width:1100px;
-    }
-    html,body,#app{height:100%;}
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background:var(--bg);
-      color:#333;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      overflow-x:hidden;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Mom 💖</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    background: linear-gradient(180deg, #ffebee, #ffe0f7);
+    color: #333;
+    text-align: center;
+  }
 
-    /* full-screen container */
-    .wrap{
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
-      align-items:stretch;
-    }
+  header {
+    padding: 2rem 1rem;
+  }
 
-    header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:14px;
-      gap:12px;
-      position:relative;
-      z-index:40;
-    }
-    h1{margin:0;font-size:1.5rem;color:var(--accent);}
-    nav{display:flex;gap:8px;flex-wrap:wrap;}
-    .tab-btn{
-      background:rgba(255,255,255,0.85);
-      border:1px solid rgba(0,0,0,0.06);
-      padding:8px 12px;
-      border-radius:10px;
-      cursor:pointer;
-      font-weight:600;
-      font-size:0.95rem;
-    }
-    .tab-btn.active{background:var(--pink);color:white;box-shadow:0 6px 18px rgba(255,127,191,0.12);}
+  h1 {
+    font-size: 2.5rem;
+    color: #e91e63;
+  }
 
-    main{
-      flex:1;
-      display:flex;
-      justify-content:center;
-      padding:14px;
-      gap:14px;
-    }
-    .container{
-      width:100%;
-      max-width:var(--max-width);
-    }
+  /* Cake Section */
+  #cake {
+    margin: 2rem auto;
+    width: 160px;
+    cursor: pointer;
+  }
 
-    /* card */
-    .card{
-      background:var(--card);
-      border-radius:var(--radius);
-      box-shadow:0 10px 30px rgba(0,0,0,0.06);
-      padding:18px;
-      margin-bottom:18px;
-    }
+  /* Present Section */
+  #present {
+    margin: 2rem auto;
+  }
 
-    /* fireworks canvas sits behind content but above background emojis */
-    canvas#fw{
-      position:fixed;
-      left:0;top:0;
-      width:100%;height:100%;
-      z-index:15;
-      pointer-events:auto;
-    }
+  .gift {
+    width: 120px;
+    height: 120px;
+    background: #ff4081;
+    border-radius: 8px;
+    margin: 0 auto;
+    position: relative;
+    cursor: pointer;
+  }
 
-    /* falling emojis */
-    #emoji-falls{
-      position:fixed;
-      left:0;top:0;
-      width:100%;height:100%;
-      pointer-events:none;
-      overflow:hidden;
-      z-index:6;
-    }
-    .falling{
-      position:absolute;
-      top:-10vh;
-      opacity:0.95;
-      animation:fall linear infinite;
-      pointer-events:none;
-      user-select:none;
-      will-change:transform;
-    }
-    @keyframes fall{
-      0%{transform:translateY(-5vh) rotate(0deg); opacity:0}
-      10%{opacity:1}
-      100%{transform:translateY(120vh) rotate(360deg); opacity:0}
-    }
+  .gift:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 55px;
+    width: 10px;
+    height: 120px;
+    background: #fff;
+  }
 
-    /* top-right music control */
-    .music-btn{
-      position:fixed;
-      right:16px;
-      bottom:94px;
-      z-index:40;
-      background:white;padding:10px;border-radius:10px;box-shadow:0 8px 18px rgba(0,0,0,0.08);
-    }
+  .gift:after {
+    content: '';
+    position: absolute;
+    top: 55px;
+    left: 0;
+    width: 120px;
+    height: 10px;
+    background: #fff;
+  }
 
-    /* homepage layout */
-    .home-grid{display:flex;flex-direction:column;gap:12px}
-    .interactive-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center}
-    .cake-wrap{display:flex;flex-direction:column;align-items:center;user-select:none}
-    .cake-caption{margin-top:10px;color:var(--muted)}
+  /* Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+  }
 
-    /* candle (checkbox hack) */
-    .candle-ctrl { display:none; }
-    .candle {
-      display:inline-block; cursor:pointer;
-    }
-    .flame {
-      transform-origin:center bottom;
-      transition:opacity .18s ease, transform .18s ease;
-      transform:translateY(0) scaleY(1);
-    }
-    /* when checkbox is checked -> hide flame (blown out) */
-    .candle-ctrl:checked + label .flame { opacity:0; transform:translateY(-6px) scaleY(.6); }
+  .modal-content {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+  }
 
-    .smoke {
-      display:inline-block;
-      opacity:0;
-      transform:translateY(0) scale(0.8);
-      transition:opacity .35s ease, transform .35s ease;
-    }
-    /* show a quick smoke when box checked */
-    .candle-ctrl:checked + label .smoke { opacity:1; transform:translateY(-14px) scale(1.1); }
+  /* Timeline */
+  section#timeline {
+    background: #fff0f6;
+    padding: 2rem 1rem;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 600px;
+    margin: 2rem auto;
+  }
 
-       /* present button */
-    .present { display:inline-flex;flex-direction:column;align-items:center;padding:14px;border-radius:12px;background:white;box-shadow:0 12px 30px rgba(0,0,0,0.06);cursor:pointer }
+  .timeline-item {
+    margin: 0.8rem 0;
+    padding: 0.8rem;
+    background: #ffeaf4;
+    border-radius: 8px;
+  }
 
-    /* modal via checkbox */
-    .modal-ctrl { display:none; }
-    .modal {
-      position:fixed;left:0;top:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;
-      background:rgba(0,0,0,0.65); padding:12px; z-index:80;
-    }
-    .modal .box { background:white;border-radius:12px;padding:10px;width:100%;max-width:940px;box-shadow:0 18px 40px rgba(0,0,0,0.2) }
-    
-    /* carousel */
-    .carousel{position:relative;overflow:hidden;border-radius:12px}
-    .carousel img{width:100%;height:360px;object-fit:cover;display:block}
-    .carousel .controls{display:flex;justify-content:space-between;margin-top:8px;align-items:center}
+  button {
+    background: #e91e63;
+    color: #fff;
+    border: none;
+    padding: 0.7rem 1.4rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background 0.3s;
+  }
 
-    /* timeline */
-    .timeline-visual{border-left:3px solid rgba(255,127,191,0.28);padding-left:14px}
-    .timeline-item{position:relative;margin-bottom:20px;padding-left:20px}
-    .timeline-item::before{content:'';position:absolute;left:-45px;top:2px;width:66px;height:28px;border-radius:999px;background:white;display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:700}
+  button:hover {
+    background: #c2185b;
+  }
 
-    /* letter */
-    textarea.letter{width:100%;height:56vh;padding:14px;border-radius:12px;border:1px solid rgba(0,0,0,0.06);resize:vertical;font-size:1rem}
+  footer {
+    padding: 2rem;
+    font-size: 0.9rem;
+    color: #777;
+  }
 
-    /* footer signature */
-    .signature{margin-top:12px;text-align:right;color:var(--accent);font-weight:700}
-
-    /* small screen adjustments */
-    @media (min-width:900px){
-      .home-grid{flex-direction:row}
-      .carousel img{height:480px}
-      .interactive-row{justify-content:space-between}
-    }
-
-    @media (max-width:520px){
-      h1{font-size:1.15rem}
-      .tab-btn{padding:8px 10px;font-size:0.88rem}
-      .carousel img{height:260px}
-    }
-
-    /* small helpers */
-    .muted{color:var(--muted)}
-    .btn{cursor:pointer;padding:8px 12px;border-radius:10px;border:none;background:var(--accent);color:white;font-weight:700}
-    .btn.secondary{background:white;border:1px solid rgba(0,0,0,0.06);color:#333}
-    .flex{display:flex}
-    .gap{gap:10px}
-  </style>
+</style>
 </head>
 <body>
-  <div id="app" class="wrap">
-    <!-- falling emojis -->
-    <div id="emoji-falls"></div>
 
-    <!-- background canvas fireworks -->
-    <canvas id="fw"></canvas>
+<header>
+  <h1>🎉 Happy Birthday, Mom! 🎂</h1>
+  <p>Wishing you joy, love, and laughter today and always ❤️</p>
+</header>
 
-    <header>
-      <h1>Happy Birthday, Mummy 🎉</h1>
-      <nav id="nav">
-        <button class="tab-btn active" data-tab="home">Our Personal Message</button>
-        <button class="tab-btn" data-tab="memories">Our Memories</button>
-        <button class="tab-btn" data-tab="timeline">Timeline of Our Precious Mummy</button>
-        <button class="tab-btn" data-tab="letter">Heartfelt Letter</button>
-      </nav>
-    </header>
+<!-- Cake Section -->
+<div id="cake">
+  <svg id="cakeSVG" viewBox="0 0 260 130" width="160">
+    <!-- cake base -->
+    <rect x="40" y="70" width="180" height="40" rx="8" fill="#ff80ab"/>
+    <rect x="40" y="70" width="180" height="12" fill="#f06292"/>
 
-  <main>
-      <div class="container">
+    <!-- candle -->
+    <rect id="candleStem" x="125" y="36" width="6" height="34" rx="2" fill="#fff"/>
+    <g id="flame">
+      <ellipse cx="128" cy="28" rx="8" ry="14" fill="#ffb74d">
+        <animate attributeName="cy" values="27;29;27" dur="0.6s" repeatCount="indefinite"/>
+        <animate attributeName="rx" values="7;9;7" dur="0.6s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse cx="128" cy="24" rx="4" ry="9" fill="#fff3b0">
+        <animate attributeName="cy" values="23;25;23" dur="0.6s" repeatCount="indefinite"/>
+      </ellipse>
+    </g>
+    <g id="smoke" style="display:none">
+      <circle cx="128" cy="20" r="4" fill="rgba(150,150,150,0.6)">
+        <animate attributeName="cy" from="20" to="0" dur="1.2s" fill="freeze"/>
+        <animate attributeName="opacity" from="1" to="0" dur="1.2s" fill="freeze"/>
+      </circle>
+    </g>
+  </svg>
+  <p>Click the candle to blow it out or relight 🔥</p>
+</div>
 
-        <!-- HOME (visible when #tab-home checked) -->
-        <section class="card" aria-labelledby="home-title"
-                 style="display:block"
-                 >
-          <!-- CSS-only visibility: rely on :checked style in browsers where the radio is checked.
-               For clarity we keep sections visible/hidden via CSS pseudo selectors below. -->
-          <div id="home-content">
-            <h2 id="home-title" style="margin:0;color:var(--accent)">Our Personal Message</h2>
-            <p style="color:var(--muted);margin-top:6px">Mummy, you are our sunshine. Click the candle to blow it out. Open the present to watch the surprise video.</p>
+<!-- Present Section -->
+<section id="present">
+  <h2>🎁 A Special Surprise!</h2>
+  <div class="gift" id="giftBox"></div>
+</section>
 
-            <div class="home-grid" style="margin-top:14px;align-items:center">
-              <div style="flex:1;min-width:240px">
-                <!-- Candle uses checkbox hack: checked => flame hidden (blown out) -->
-                <input type="checkbox" id="candleBox" class="candle-ctrl" />
-                <label for="candleBox" class="candle" title="Click to blow out the candle (stays out)">
-                  <!-- Cake SVG simplified -->
-                  <svg width="260" height="240" viewBox="0 0 260 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <g transform="translate(8,8)">
-                      <rect x="16" y="100" width="220" height="90" rx="16" fill="#ffdbe9" stroke="#ffb6d9" stroke-width="3"/>
-                      <rect x="42" y="70" width="176" height="40" rx="12" fill="#fff6f9" stroke="#ffdbe6" stroke-width="2"/>
-                      <!-- candle stem -->
-                      <rect x="125" y="36" width="6" height="34" rx="2" fill="#fff"/>
-                      <!-- flame (hidden when checkbox checked) -->
-                      <g class="flame">
-                        <ellipse cx="128" cy="24" rx="8" ry="14" fill="#ffb74d"/>
-                        <ellipse cx="128" cy="20" rx="4" ry="8" fill="#fff3b0"/>
-                      </g>
-                      <!-- smoke shown when checked: use CSS sibling selector to show small emoji above -->
-                      <g class="smoke" transform="translate(0,0)">
-                        <text x="112" y="26" font-size="18">💨</text>
-                      </g>
-                    </g>
-                  </svg>
-                </label>
-
-                <div class="cake-caption">Click the cake to blow the candle out (it will stay out).</div>
-              </div>
-
-              <div style="flex:1;min-width:240px;display:flex;flex-direction:column;align-items:center;gap:12px">
-                <!-- Present: uses checkbox to toggle modal open (pure HTML) -->
-                <input type="checkbox" id="presentBox" class="modal-ctrl" />
-                <label for="presentBox" class="present" title="Open present — plays your uploaded present.mp4">
-                  <div style="font-size:46px">🎁</div>
-                  <div style="margin-top:8px;font-weight:700;color:var(--muted)">Open Present</div>
-                </label>
-
-                <div style="width:100%;text-align:center;margin-top:6px;color:var(--accent);font-weight:700">With love from Vineesh and Sudeepti</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- MEMORIES -->
-        <section id="memories" class="card" style="display:none">
-          <h2 style="color:var(--accent);margin:0 0 8px 0;">Our Memories</h2>
-          <p class="muted">A carousel of our favourite moments. Replace these sample images in your repo later.</p>
-
-          <div class="carousel" id="carousel" style="margin-top:12px;">
-            <!-- sample embedded placeholder images (these are inline SVG data URLs so the page works immediately) -->
-            <div id="slides" style="position:relative">
-              <img id="slideImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='700'><rect width='100%' height='100%' fill='%23ffdfe9'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='60' fill='%23ff6fa3'>Memory%201</text></svg>" alt="memory"/>
-            </div>
-
-            <div class="controls">
-              <button class="btn secondary" id="prev">Prev</button>
-              <div class="muted" id="slideIndex">1 / 3</div>
-              <button class="btn" id="next">Next</button>
-            </div>
-          </div>
-
-          <div style="margin-top:12px;text-align:right">
-            <small class="muted">With love from Vineesh and Sudeepti</small>
-          </div>
-        </section>
-
-        <!-- TIMELINE -->
-        <section id="timeline" class="card" style="display:none">
-          <h2 style="color:var(--accent);margin:0 0 8px 0;">Timeline of Our Precious Mummy</h2>
-          <div style="display:flex;gap:12px;flex-wrap:wrap">
-            <div style="flex:1;min-width:260px" class="timeline-visual" id="timelineVisual">
-              <!-- timeline items will be injected here -->
-            </div>
-
-            <div style="width:320px;min-width:260px;background:rgba(255,255,255,0.9);padding:12px;border-radius:12px;box-shadow:0 8px 18px rgba(0,0,0,0.04)">
-              <h3 style="margin:0 0 8px 0">Add a timeline moment</h3>
-              <form id="timelineForm">
-                <input name="year" placeholder="Year (e.g. 1995)" style="width:100%;padding:10px;margin-bottom:8px;border-radius:8px;border:1px solid #eee" required/>
-                <input name="title" placeholder="Title" style="width:100%;padding:10px;margin-bottom:8px;border-radius:8px;border:1px solid #eee" required/>
-                <input name="image" placeholder="Image URL (optional)" style="width:100%;padding:10px;margin-bottom:8px;border-radius:8px;border:1px solid #eee"/>
-                <textarea name="note" placeholder="Short note" style="width:100%;padding:10px;height:88px;border-radius:8px;border:1px solid #eee"></textarea>
-                <div style="display:flex;gap:8px;margin-top:8px">
-                  <button class="btn" type="submit">Add</button>
-                  <button class="btn secondary" type="button" id="clearTimeline">Clear</button>
-                </div>
-              </form>
-            </div>
-          </div>
-
-          <div style="margin-top:8px;text-align:right">
-            <small class="muted">With love from Vineesh and Sudeepti</small>
-          </div>
-        </section>
-
-        <!-- LETTER -->
-        <section id="letter" class="card" style="display:none">
-          <h2 style="color:var(--accent);margin:0 0 8px 0;">Heartfelt Letter</h2>
-          <p class="muted">Write a long thoughtful letter for Mummy. Copy or download when you're done.</p>
-          <textarea id="letterBox" class="letter">Dear Mummy,
-
-Happy Birthday! We love you so much. Thank you for everything you do — your warmth, your guidance, and your endless love. ...</textarea>
-
-          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
-            <button class="btn secondary" id="copyLetter">Copy</button>
-            <button class="btn" id="downloadLetter">Download</button>
-          </div>
-
-          <div style="margin-top:12px;text-align:right">
-            <small class="muted">With love from Vineesh and Sudeepti</small>
-          </div>
-        </section>
-      </div>
-    </main>
-
-    <!-- Present modal (hidden) -->
-    <div id="presentModal" class="modal" style="display:none;">
-      <div class="modal-content">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <h3 style="margin:0;color:var(--accent)">A Surprise for Mummy</h3>
-          <button id="closePresent" class="btn secondary">Close</button>
-        </div>
-        <!-- The video tag expects present.mp4 in same folder as index.html -->
-        <video id="presentVideo" controls style="width:100%;border-radius:8px" playsinline>
-          <source src="present.mp4" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-      </div>
-    </div>
-
-    <!-- bottom footer small -->
-    <footer style="padding:12px;text-align:center;font-size:0.92rem;color:var(--muted);z-index:46">
-      Made with ❤️ for Mummy — Vineesh & Sudeepti
-    </footer>
-
-    <!-- Music control -->
-    <div class="music-btn" id="musicControl">
-      <audio id="bgAudio" src="happy-birthday-322777.mp3" loop preload="auto"></audio>
-      <button id="toggleMusic" class="btn">Play Music</button>
-    </div>
+<!-- Modal for Video -->
+<div class="modal" id="videoModal">
+  <div class="modal-content">
+    <h3>💝 From Me to You</h3>
+    <video id="presentVideo" controls style="width:100%;border-radius:8px" playsinline>
+      <source src="present.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <button id="closeModal">Close</button>
   </div>
+</div>
 
-  <script>
-    // ---------- Tabs ----------
-    (function(){
-      const tabs = document.querySelectorAll('.tab-btn');
-      const sections = { home:document.getElementById('home'), memories:document.getElementById('memories'), timeline:document.getElementById('timeline'), letter:document.getElementById('letter') };
-      function show(tab){
-        for(const t of tabs){ t.classList.toggle('active', t.dataset.tab === tab); }
-        for(const key in sections){ sections[key].style.display = (key===tab)?'block':'none'; }
-      }
-      tabs.forEach(b=> b.addEventListener('click', ()=> show(b.dataset.tab)));
-      // start on home
-      show('home');
-    })();
+<!-- Timeline Section -->
+<section id="timeline">
+  <h2>🕰️ Our Journey (2000–2025)</h2>
+  <div id="timelineContainer">
+    <div class="timeline-item">2000 – A beautiful beginning 🌸</div>
+    <div class="timeline-item">2005 – Fun memories and laughter 😄</div>
+    <div class="timeline-item">2010 – Adventures together ✈️</div>
+    <div class="timeline-item">2015 – Family love stronger than ever ❤️</div>
+    <div class="timeline-item">2020 – Cherishing every moment 💕</div>
+    <div class="timeline-item">2025 – Celebrating you today 🎉</div>
+  </div>
+  <button id="addMoment">➕ Add a Timeline Moment</button>
+</section>
 
-    // ---------- Falling emojis ----------
-    (function(){
-      const container = document.getElementById('emoji-falls');
-      const emojis = ['💖','😊','🤗','🌸'];
-      const count = 16;
-      for(let i=0;i<count;i++){
-        const s = document.createElement('div');
-        s.className = 'falling';
-        s.textContent = emojis[Math.floor(Math.random()*emojis.length)];
-        s.style.left = Math.random()*100 + '%';
-        s.style.fontSize = (12 + Math.random()*28) + 'px';
-        s.style.animationDuration = (6 + Math.random()*8) + 's';
-        s.style.animationDelay = (Math.random()*5)+'s';
-        container.appendChild(s);
-      }
-    })();
+<!-- Music -->
+<section>
+  <h2>🎶 Play Some Music!</h2>
+  <audio id="bgAudio" src="bday-music.mp3" loop preload="auto"></audio>
+  <button id="playMusic">Play Music</button>
+</section>
 
-    // ---------- Fireworks on main canvas ----------
-    (function(){
-      const canvas = document.getElementById('fw');
-      const ctx = canvas.getContext('2d');
-      let W = canvas.width = innerWidth;
-      let H = canvas.height = innerHeight;
-      window.addEventListener('resize', ()=>{ W=canvas.width=innerWidth; H=canvas.height=innerHeight; });
+<footer>
+  Made with ❤️ by Vineesh
+</footer>
 
-      const particles = [];
-      function rnd(min,max){ return Math.random()*(max-min)+min; }
-      function explode(x,y){
-        const colors = ['#ff7fbf','#ffd166','#7afcff','#b28dff','#8cffb3'];
-        const count = 26;
-        for(let i=0;i<count;i++){
-          const angle = Math.random()*Math.PI*2;
-          const speed = rnd(1,6);
-          particles.push({
-            x,y,
-            vx:Math.cos(angle)*speed,
-            vy:Math.sin(angle)*speed,
-            life: Math.floor(rnd(40,100)),
-            color: colors[Math.floor(Math.random()*colors.length)],
-            r: rnd(1.8,3.6)
-          });
-        }
-      }
-      function loop(){
-        ctx.clearRect(0,0,W,H);
-        for(let i=particles.length-1;i>=0;i--){
-          const p=particles[i];
-          p.x += p.vx; p.y += p.vy;
-          p.vy += 0.06;
-          p.vx *= 0.998;
-          p.life--;
-          ctx.globalAlpha = Math.max(p.life/100,0);
-          ctx.fillStyle = p.color;
-          ctx.beginPath();
-          ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-          ctx.fill();
-          if(p.life<=0) particles.splice(i,1);
-        }
-        requestAnimationFrame(loop);
-      }
-      loop();
-      // click to create fireworks (only on home area; but we allow clicks anywhere)
-      canvas.addEventListener('click', (e)=>{
-        const rect = canvas.getBoundingClientRect();
-        explode(e.clientX - rect.left, e.clientY - rect.top);
-      });
-    })();
+<script>
+  // ---------- Candle ----------
+  (function(){
+    const cake = document.getElementById('cake');
+    const flame = document.getElementById('flame');
+    const smoke = document.getElementById('smoke');
+    let lit = true;
 
-    // ---------- Cake interaction ----------
-    (function(){
-      const cake = document.getElementById('cake');
-      const flame = document.getElementById('flame');
-      const smoke = document.getElementById('smoke');
-      let lit = true;
-      cake.addEventListener('click', ()=>{
-        if(!lit){
-          // relight after a moment if desired; here we toggle to lit on second click
-          lit = true;
-          flame.style.display = 'block';
-          smoke.style.display = 'none';
-          return;
-        }
-        // blow out
-        lit = false;
-        flame.style.display = 'none';
-        smoke.style.display = 'block';
-        // small puff particles at candle location
-        // optional: create a few fireworks puffs near candle
-      });
-      // start lit
-      flame.style.display = 'block';
+    function blowOut() {
+      flame.style.display = 'none';
+      smoke.style.display = 'block';
+      setTimeout(() => { smoke.style.display = 'none'; }, 1500);
+      lit = false;
+    }
+
+    function relight() {
       smoke.style.display = 'none';
-    })();
+      flame.style.display = 'block';
+      lit = true;
+    }
 
-    // ---------- Present modal ----------
-    (function(){
-      const presentBtn = document.getElementById('presentBtn');
-      const modal = document.getElementById('presentModal');
-      const close = document.getElementById('closePresent');
-      const video = document.getElementById('presentVideo');
+    cake.addEventListener('click', () => {
+      if (lit) blowOut();
+      else relight();
+    });
 
-      presentBtn.addEventListener('click', ()=>{
-        modal.style.display = 'flex';
-        try{ video.currentTime = 0; video.play().catch(()=>{}); }catch(e){}
-      });
-      close.addEventListener('click', ()=>{
-        try{ video.pause(); }catch(e){}
-        modal.style.display = 'none';
-      });
-      // clicking outside content closes
-      modal.addEventListener('click', (ev)=>{
-        if(ev.target === modal){ try{ video.pause(); }catch(e){} modal.style.display='none'; }
-      });
-    })();
+    relight();
+  })();
 
-    // ---------- Music control ----------
-    (function(){
-      const audio = document.getElementById('bgAudio');
-      const btn = document.getElementById('toggleMusic');
-      let playing = false;
-      btn.addEventListener('click', ()=>{
-        if(!playing){
-          audio.play().catch(()=>{ /* autoplay blocked; user clicked so should be allowed */});
-          btn.textContent = 'Pause Music';
-          playing = true;
-        } else {
-          audio.pause();
-          btn.textContent = 'Play Music';
-          playing = false;
-        }
-      });
-      // if audio ends (looped), maintain state
-      audio.addEventListener('play', ()=>{ btn.textContent='Pause Music'; playing=true; });
-      audio.addEventListener('pause', ()=>{ btn.textContent='Play Music'; playing=false; });
-    })();
+  // ---------- Present ----------
+  const giftBox = document.getElementById('giftBox');
+  const modal = document.getElementById('videoModal');
+  const closeModal = document.getElementById('closeModal');
+  const video = document.getElementById('presentVideo');
 
-    // ---------- Carousel (memories) ----------
-    (function(){
-      // three sample inline SVG placeholders as default slides; you can replace with "/images/memory1.jpg" etc.
-      const slides = [
-        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='700'><rect width='100%' height='100%' fill='%23ffdfe9'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='60' fill='%23ff6fa3'>Memory%201</text></svg>",
-        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='700'><rect width='100%' height='100%' fill='%23fff0f0'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='60' fill='%23ff8fbf'>Memory%202</text></svg>",
-        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='700'><rect width='100%' height='100%' fill='%23fff9f0'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='60' fill='%23ff6f9f'>Memory%203</text></svg>"
-      ];
-      let idx=0;
-      const img = document.getElementById('slideImg');
-      const idxLabel = document.getElementById('slideIndex');
-      function show(i){
-        idx = (i+slides.length)%slides.length;
-        img.src = slides[idx];
-        idxLabel.textContent = (idx+1) + ' / ' + slides.length;
-      }
-      document.getElementById('prev').addEventListener('click', ()=> show(idx-1));
-      document.getElementById('next').addEventListener('click', ()=> show(idx+1));
-      // auto-advance every 4s
-      setInterval(()=> show(idx+1), 4200);
-      show(0);
-    })();
+  giftBox.addEventListener('click', () => {
+    modal.style.display = 'flex';
+    video.play();
+  });
 
-    // ---------- Timeline (localStorage) ----------
-    (function(){
-      const storageKey = 'mummy_timeline_v1';
-      const form = document.getElementById('timelineForm');
-      const visual = document.getElementById('timelineVisual');
-      const clearBtn = document.getElementById('clearTimeline');
+  closeModal.addEventListener('click', () => {
+    modal.style.display = 'none';
+    video.pause();
+  });
 
-      function load(){
-        const raw = localStorage.getItem(storageKey);
-        try{
-          const arr = raw? JSON.parse(raw) : [
-            {year:'1992', title:'Born', note:'The day our mummy arrived', image:''},
-            {year:'2015', title:'Graduation', note:'Proud moment', image:''}
-          ];
-          render(arr);
-        }catch(e){
-          render([]);
-        }
-      }
-      function render(arr){
-        visual.innerHTML = '';
-        arr.sort((a,b)=> (a.year||'').localeCompare(b.year||''));
-        arr.forEach((it, i)=>{
-          const el = document.createElement('div');
-          el.className = 'timeline-item';
-          el.innerHTML = `<div style="display:flex;gap:12px;align-items:flex-start">
-            <div style="min-width:86px;text-align:center;padding-top:6px;font-weight:700;color:var(--accent)">${it.year || ''}</div>
-            <div>
-              <div style="font-weight:700;color:#ff6fa3">${it.title || ''}</div>
-              <div style="color:var(--muted);margin-top:6px">${it.note || ''}</div>
-              ${it.image? `<img src="${it.image}" style="margin-top:8px;border-radius:8px;max-width:220px;display:block" />` : ''}
-            </div>
-          </div>
-          <div style="margin-top:8px"><button data-i="${i}" class="btn secondary remove">Remove</button></div>`;
-          visual.appendChild(el);
-        });
-        // remove handlers
-        visual.querySelectorAll('.remove').forEach(btn=>{
-          btn.addEventListener('click', ()=>{
-            const i = parseInt(btn.dataset.i,10);
-            const data = JSON.parse(localStorage.getItem(storageKey) || '[]');
-            data.splice(i,1);
-            localStorage.setItem(storageKey, JSON.stringify(data));
-            load();
-          });
-        });
-      }
+  // ---------- Timeline ----------
+  const addMomentBtn = document.getElementById('addMoment');
+  const timelineContainer = document.getElementById('timelineContainer');
 
-      form.addEventListener('submit', (e)=>{
-        e.preventDefault();
-        const fd = new FormData(form);
-        const obj = {
-          year: fd.get('year'),
-          title: fd.get('title'),
-          image: fd.get('image'),
-          note: fd.get('note')
-        };
-        const arr = JSON.parse(localStorage.getItem(storageKey) || '[]');
-        arr.push(obj);
-        localStorage.setItem(storageKey, JSON.stringify(arr));
-        form.reset();
-        load();
-      });
+  addMomentBtn.addEventListener('click', () => {
+    const year = prompt("Enter the year:");
+    const text = prompt("Enter your special moment:");
+    if (year && text) {
+      const div = document.createElement('div');
+      div.className = 'timeline-item';
+      div.textContent = `${year} – ${text}`;
+      timelineContainer.appendChild(div);
+    }
+  });
 
-      clearBtn.addEventListener('click', ()=>{
-        if(confirm('Clear all saved timeline moments?')){ localStorage.removeItem(storageKey); load(); }
-      });
+  // ---------- Music ----------
+  const playMusicBtn = document.getElementById('playMusic');
+  const bgAudio = document.getElementById('bgAudio');
+  let playing = false;
 
-      load();
-    })();
-
-    // ---------- Letter copy/download ----------
-    (function(){
-      const box = document.getElementById('letterBox');
-      document.getElementById('copyLetter').addEventListener('click', ()=>{
-        navigator.clipboard.writeText(box.value).then(()=> alert('Letter copied to clipboard'));
-      });
-      document.getElementById('downloadLetter').addEventListener('click', ()=>{
-        const blob = new Blob([box.value], {type:'text/plain'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = 'letter-to-mum.txt'; a.click();
-        URL.revokeObjectURL(url);
-      });
-    })();
-
-    // ---------- small accessibility: keyboard shortcut M to toggle music ----------
-    (function(){
-      document.addEventListener('keydown', (e)=>{
-        if(e.key.toLowerCase()==='m'){
-          document.getElementById('toggleMusic').click();
-        }
-      });
-    })();
-  </script>
-
-   <!-- CSS to connect visibility of main sections to radios (pure CSS tabs) -->
-    <style>
-      /* hide all main <section.card> by default, then show the one matching the checked radio */
-      /* We'll use the fact that radios are before main in DOM; use general sibling selectors */
-      /* Note: ordering is header (radios), then main. We'll hide/show internal blocks by ID using :checked ~ main ... */
-      /* This technique requires the radios to be before the main content (they are in header). */
-      #tab-home:checked ~ main .container section.card { display:none; }
-      /* show only the first section when home checked (we rely on DOM order: there are 4 sections; we show them by index) */
-      #tab-home:checked ~ main .container > section:nth-of-type(1) { display:block; }
-      #tab-mem:checked ~ main .container section.card { display:none; }
-      #tab-mem:checked ~ main .container > section:nth-of-type(2) { display:block; }
-      #tab-tl:checked ~ main .container section.card { display:none; }
-      #tab-tl:checked ~ main .container > section:nth-of-type(3) { display:block; }
-      #tab-letter:checked ~ main .container section.card { display:none; }
-      #tab-letter:checked ~ main .container > section:nth-of-type(4) { display:block; }
-
-      /* Show candle smoke/flame control via checkbox sibling selector (already used) */
-      /* The candle checkbox is inside the Home section; we target the SVG group via CSS inlined above */
-      /* NOTE: browser behavior: the smoke element is present and will show when box checked due to the earlier rules. */
-    </style>
-
-  </div>
+  playMusicBtn.addEventListener('click', () => {
+    if (!playing) {
+      bgAudio.play();
+      playMusicBtn.textContent = 'Pause Music';
+      playing = true;
+    } else {
+      bgAudio.pause();
+      playMusicBtn.textContent = 'Play Music';
+      playing = false;
+    }
+  });
+</script>
 </body>
 </html>
