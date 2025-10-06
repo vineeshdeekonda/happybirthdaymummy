@@ -1,0 +1,385 @@
+import React, { useEffect, useRef, useState } from "react";
+
+// Happy Birthday Mom - Single-file React component
+// Tailwind CSS assumed available in the project (recommended: Vite + Tailwind or Create React App + Tailwind)
+// How to deploy to GitHub Pages (short):
+// 1. Create a React app (Vite recommended): `npm create vite@latest happy-bday-mom --template react`
+// 2. Add Tailwind CSS (follow Tailwind docs) or keep the inline styles.
+// 3. Replace src/App.jsx with this file, install dependencies and run locally: `npm install` -> `npm run dev`.
+// 4. Push to GitHub and enable GitHub Pages from the repo settings or use `gh-pages` package.
+
+export default function App() {
+  const [tab, setTab] = useState("home");
+  const [musicPlaying, setMusicPlaying] = useState(false);
+  const audioRef = useRef(null);
+
+  // Fireworks canvas
+  const canvasRef = useRef(null);
+  const [fireworksEnabled, setFireworksEnabled] = useState(true);
+
+  // Cake candle state
+  const [candleLit, setCandleLit] = useState(true);
+
+  // Present modal / video
+  const [presentOpen, setPresentOpen] = useState(false);
+
+  // Carousel images (our memories)
+  const [photos] = useState([
+    // Add your URLs or drop them into /public and reference them here
+    "/images/memory1.jpg",
+    "/images/memory2.jpg",
+    "/images/memory3.jpg",
+  ]);
+  const [currentPhoto, setCurrentPhoto] = useState(0);
+
+  // Timeline entries
+  const [timeline, setTimeline] = useState([
+    { year: "1990", title: "Born", image: "/images/baby.jpg", note: "The day our mummy arrived." },
+    { year: "2010", title: "Graduation", image: "/images/grad.jpg", note: "Proud moment." },
+  ]);
+  const yearRef = useRef();
+  const titleRef = useRef();
+  const imageRef = useRef();
+  const noteRef = useRef();
+
+  // Letter
+  const [letter, setLetter] = useState(
+    `Dear Mummy,\n\nHappy Birthday! We love you so much...`);
+
+  // Falling emojis
+  useEffect(() => {
+    const container = document.getElementById("emoji-falls");
+    if (!container) return;
+    // create a set of falling emojis
+    const emojis = ["💖", "😊", "🤗", "🌸"]; // love, smiley, hug, flower
+    const count = 18;
+    container.innerHTML = "";
+    for (let i = 0; i < count; i++) {
+      const span = document.createElement("span");
+      span.className = "falling-emoji absolute text-2xl opacity-90 pointer-events-none";
+      span.style.left = `${Math.random() * 100}%`;
+      span.style.animationDelay = `${Math.random() * 5}s`;
+      span.style.fontSize = `${14 + Math.random() * 18}px`;
+      span.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      container.appendChild(span);
+    }
+
+    return () => {
+      container.innerHTML = "";
+    };
+  }, []);
+
+  // Audio control
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.loop = true;
+    if (musicPlaying) {
+      audio.play().catch(() => {
+        // Autoplay may be blocked; user can click play
+        setMusicPlaying(false);
+      });
+    } else {
+      audio.pause();
+    }
+  }, [musicPlaying]);
+
+  // Simple fireworks implementation on canvas
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    let W = (canvas.width = window.innerWidth);
+    let H = (canvas.height = window.innerHeight);
+
+    const fireworks = [];
+
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resize);
+
+    function rand(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function createFirework(x, y) {
+      const colors = ["#ff5c8a", "#ffd166", "#7afcff", "#b28dff", "#8cffb3"];
+      const count = 24;
+      const particles = [];
+      for (let i = 0; i < count; i++) {
+        const angle = (i / count) * Math.PI * 2;
+        particles.push({
+          x,
+          y,
+          vx: Math.cos(angle) * rand(1, 5),
+          vy: Math.sin(angle) * rand(1, 5),
+          life: rand(40, 80),
+          color: colors[Math.floor(Math.random() * colors.length)],
+        });
+      }
+      fireworks.push(...particles);
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, W, H);
+      for (let i = fireworks.length - 1; i >= 0; i--) {
+        const p = fireworks[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.05; // gravity
+        p.life -= 1;
+        ctx.globalAlpha = Math.max(p.life / 80, 0);
+        ctx.beginPath();
+        ctx.fillStyle = p.color;
+        ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+        if (p.life <= 0) fireworks.splice(i, 1);
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    function handleClick(e) {
+      if (!fireworksEnabled) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      createFirework(x, y);
+    }
+
+    canvas.addEventListener("click", handleClick);
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      canvas.removeEventListener("click", handleClick);
+    };
+  }, [fireworksEnabled]);
+
+  // Cake click toggles candle
+  function handleCakeClick() {
+    setCandleLit(false);
+    // tiny animation to relight after a short delay (optional)
+    setTimeout(() => {
+      // keep blown out — user can refresh to relight or we can allow relight
+    }, 2000);
+  }
+
+  // Carousel controls
+  useEffect(() => {
+    const t = setInterval(() => {
+      setCurrentPhoto((p) => (p + 1) % photos.length);
+    }, 4000);
+    return () => clearInterval(t);
+  }, [photos.length]);
+
+  function addTimelineEntry(e) {
+    e.preventDefault();
+    const newEntry = {
+      year: yearRef.current.value,
+      title: titleRef.current.value,
+      image: imageRef.current.value,
+      note: noteRef.current.value,
+    };
+    setTimeline((t) => [...t, newEntry]);
+    yearRef.current.value = "";
+    titleRef.current.value = "";
+    imageRef.current.value = "";
+    noteRef.current.value = "";
+  }
+
+  return (
+    <div className="min-h-screen relative font-sans">
+      {/* falling emojis container */}
+      <div id="emoji-falls" className="pointer-events-none fixed inset-0 z-0 overflow-hidden"></div>
+
+      {/* background */}
+      <div className="fixed inset-0 bg-pink-50 z-[-1]"></div>
+
+      {/* fireworks canvas (only visible on home) */}
+      <canvas ref={canvasRef} className="fixed inset-0 z-10 pointer-events-auto"></canvas>
+
+      {/* Header / Nav */}
+      <header className="p-4 flex items-center justify-between z-20 relative">
+        <h1 className="text-3xl font-bold text-pink-700">Happy Birthday, Mummy 🎉</h1>
+        <nav className="space-x-2">
+          <button onClick={() => setTab("home")} className={`px-3 py-1 rounded ${tab === "home" ? "bg-pink-300" : "bg-white/60"}`}>Our Personal Message</button>
+          <button onClick={() => setTab("memories")} className={`px-3 py-1 rounded ${tab === "memories" ? "bg-pink-300" : "bg-white/60"}`}>Our Memories</button>
+          <button onClick={() => setTab("timeline")} className={`px-3 py-1 rounded ${tab === "timeline" ? "bg-pink-300" : "bg-white/60"}`}>Timeline</button>
+          <button onClick={() => setTab("letter")} className={`px-3 py-1 rounded ${tab === "letter" ? "bg-pink-300" : "bg-white/60"}`}>Heartfelt Letter</button>
+        </nav>
+      </header>
+
+      {/* Music control */}
+      <div className="fixed right-4 bottom-24 z-30">
+        <audio ref={audioRef} src="/audio/bday-music.mp3" />
+        <button
+          onClick={() => setMusicPlaying((m) => !m)}
+          className="px-3 py-2 rounded shadow-md bg-white/90"
+        >
+          {musicPlaying ? "Pause Music" : "Play Music"}
+        </button>
+      </div>
+
+      {/* Main content */}
+      <main className="p-6 z-20 relative">
+        {tab === "home" && (
+          <section className="max-w-4xl mx-auto bg-white/80 rounded-2xl p-6 shadow-lg">
+            <h2 className="text-2xl font-semibold text-pink-600 mb-4">Our Personal Message</h2>
+            <p className="mb-4">Mummy, you are our sunshine. Click anywhere to make fireworks — and try the cake and the present!</p>
+
+            <div className="flex flex-col md:flex-row gap-6 items-center">
+              {/* Animated cake */}
+              <div className="w-full md:w-1/2 flex flex-col items-center">
+                <div className="relative cursor-pointer" onClick={handleCakeClick} aria-label="click to blow candle">
+                  {/* Cake SVG */}
+                  <svg width="220" height="220" viewBox="0 0 220 220">
+                    <g transform="translate(10,10)">
+                      <rect x="20" y="90" width="180" height="80" rx="18" fill="#ffd5e5" stroke="#ff9ccf" strokeWidth="3" />
+                      <rect x="40" y="60" width="140" height="40" rx="12" fill="#fff6f9" stroke="#ffd1e6" strokeWidth="2" />
+                      {/* candle */}
+                      <rect x="108" y="30" width="4" height="32" fill="#fff" />
+                      {/* flame */}
+                      {candleLit ? (
+                        <g>
+                          <ellipse cx="110" cy="24" rx="6" ry="10" fill="#ffb74d" />
+                          <ellipse cx="110" cy="22" rx="3" ry="6" fill="#fff3b0" />
+                        </g>
+                      ) : (
+                        <g>
+                          {/* blown out: smoke */}
+                          <text x="98" y="24" fontSize="10">💨</text>
+                        </g>
+                      )}
+                    </g>
+                  </svg>
+                  <div className="text-sm mt-2 text-gray-600">Click the cake to blow the candle out</div>
+                </div>
+              </div>
+
+              {/* Present */}
+              <div className="w-full md:w-1/2 flex flex-col items-center">
+                <button onClick={() => setPresentOpen(true)} className="p-6 bg-white rounded-xl shadow-md flex flex-col items-center">
+                  <div className="text-6xl">🎁</div>
+                  <div className="mt-2 text-sm">Open Present</div>
+                </button>
+              </div>
+            </div>
+
+            {/* present modal */}
+            {presentOpen && (
+              <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-40">
+                <div className="bg-white rounded-xl p-4 max-w-3xl w-full">
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="font-semibold">A Surprise Video</h3>
+                    <button onClick={() => setPresentOpen(false)} className="text-gray-600">Close</button>
+                  </div>
+                  <div className="aspect-video">
+                    {/* Replace the src with your video or an embedded YouTube link */}
+                    <iframe
+                      width="100%"
+                      height="400"
+                      src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+                      title="Surprise Video"
+                      allow="autoplay; encrypted-media"
+                    ></iframe>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="mt-6 text-right text-pink-700 font-semibold">With love from Vineesh and Sudeepti</div>
+          </section>
+        )}
+
+        {tab === "memories" && (
+          <section className="max-w-4xl mx-auto bg-white/80 rounded-2xl p-6 shadow-lg">
+            <h2 className="text-2xl font-semibold text-pink-600 mb-4">Our Memories</h2>
+            {/* Carousel */}
+            <div className="relative">
+              <div className="h-96 w-full rounded-xl overflow-hidden flex items-center justify-center bg-pink-50">
+                {/* Show photo or placeholder */}
+                {photos.length > 0 ? (
+                  <img src={photos[currentPhoto]} alt={`memory-${currentPhoto}`} className="object-cover h-full w-full" />
+                ) : (
+                  <div className="text-gray-400">No photos yet. Add images to the /public/images folder and update the array.</div>
+                )}
+              </div>
+              <div className="flex justify-between mt-3">
+                <button onClick={() => setCurrentPhoto((p) => (p - 1 + photos.length) % photos.length)} className="px-3 py-2 rounded bg-white/80">Prev</button>
+                <div className="text-sm text-gray-600">{currentPhoto + 1} / {photos.length}</div>
+                <button onClick={() => setCurrentPhoto((p) => (p + 1) % photos.length)} className="px-3 py-2 rounded bg-white/80">Next</button>
+              </div>
+            </div>
+
+            <div className="mt-6 text-right text-pink-700 font-semibold">With love from Vineesh and Sudeepti</div>
+          </section>
+        )}
+
+        {tab === "timeline" && (
+          <section className="max-w-4xl mx-auto bg-white/80 rounded-2xl p-6 shadow-lg">
+            <h2 className="text-2xl font-semibold text-pink-600 mb-4">Timeline of Our Precious Mummy</h2>
+            <div className="space-y-6">
+              <div className="flex flex-col md:flex-row gap-6">
+                <div className="md:w-2/3">
+                  {/* visual timeline */}
+                  <div className="border-l-2 border-pink-200 pl-6">
+                    {timeline.map((item, idx) => (
+                      <div key={idx} className="mb-8 relative">
+                        <div className="absolute -left-7 top-1 w-12 h-12 rounded-full bg-white shadow flex items-center justify-center">{item.year}</div>
+                        <div className="ml-2">
+                          <h3 className="font-semibold text-pink-600">{item.title}</h3>
+                          <p className="text-sm text-gray-600">{item.note}</p>
+                          {item.image && <img src={item.image} alt={item.title} className="mt-2 rounded-md max-h-40 object-cover" />}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="md:w-1/3 bg-pink-50 p-4 rounded-xl">
+                  <h4 className="font-semibold mb-2">Add a timeline moment</h4>
+                  <form onSubmit={addTimelineEntry} className="space-y-2">
+                    <input ref={yearRef} placeholder="Year (e.g. 2005)" className="w-full p-2 rounded" />
+                    <input ref={titleRef} placeholder="Title" className="w-full p-2 rounded" />
+                    <input ref={imageRef} placeholder="Image URL (optional)" className="w-full p-2 rounded" />
+                    <textarea ref={noteRef} placeholder="Short note" className="w-full p-2 rounded" />
+                    <button type="submit" className="px-3 py-2 rounded bg-pink-300">Add</button>
+                  </form>
+                </div>
+              </div>
+
+              <div className="text-right text-pink-700 font-semibold">With love from Vineesh and Sudeepti</div>
+            </div>
+          </section>
+        )}
+
+        {tab === "letter" && (
+          <section className="max-w-4xl mx-auto bg-white/80 rounded-2xl p-6 shadow-lg">
+            <h2 className="text-2xl font-semibold text-pink-600 mb-4">Heartfelt Letter</h2>
+            <textarea value={letter} onChange={(e) => setLetter(e.target.value)} className="w-full h-96 p-4 rounded-lg border" />
+            <div className="mt-3 flex justify-end gap-3">
+              <button onClick={() => { navigator.clipboard.writeText(letter); }} className="px-3 py-2 rounded bg-white/80">Copy</button>
+              <button onClick={() => { const blob = new Blob([letter], { type: 'text/plain' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'letter-to-mum.txt'; a.click(); URL.revokeObjectURL(url); }} className="px-3 py-2 rounded bg-pink-300">Download</button>
+            </div>
+            <div className="mt-6 text-right text-pink-700 font-semibold">With love from Vineesh and Sudeepti</div>
+          </section>
+        )}
+      </main>
+
+      {/* Footer small */}
+      <footer className="fixed left-0 bottom-0 w-full p-2 text-center text-sm text-gray-600 z-20">Made with ❤️ for Mummy — Vineesh & Sudeepti</footer>
+
+      {/* Minimal styles without external CSS (Tailwind recommended) */}
+      <style>{`
+        .falling-emoji { animation: fall linear infinite; }
+        @keyframes fall {
+          0% { transform: translateY(-10vh); opacity: 0; }
+          10% { opacity: 1; }
+          100% { transform: translateY(120vh); opacity: 0; }
+        }
+      `}</style>
+    </div>
+  );
+}
