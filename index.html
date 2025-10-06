@@ -1,282 +1,243 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Happy Birthday Mom 💖</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Happy Birthday, Mummy 🎉</title>
 <style>
-  body {
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    background: linear-gradient(180deg, #ffebee, #ffe0f7);
-    color: #333;
-    text-align: center;
-  }
-
-  header {
-    padding: 2rem 1rem;
-  }
-
-  h1 {
-    font-size: 2.5rem;
-    color: #e91e63;
-  }
-
-  /* Cake Section */
-  #cake {
-    margin: 2rem auto;
-    width: 160px;
-    cursor: pointer;
-  }
-
-  /* Present Section */
-  #present {
-    margin: 2rem auto;
-  }
-
-  .gift {
-    width: 120px;
-    height: 120px;
-    background: #ff4081;
-    border-radius: 8px;
-    margin: 0 auto;
-    position: relative;
-    cursor: pointer;
-  }
-
-  .gift:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 55px;
-    width: 10px;
-    height: 120px;
-    background: #fff;
-  }
-
-  .gift:after {
-    content: '';
-    position: absolute;
-    top: 55px;
-    left: 0;
-    width: 120px;
-    height: 10px;
-    background: #fff;
-  }
-
-  /* Modal */
-  .modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    align-items: center;
-    justify-content: center;
-    z-index: 20;
-  }
-
-  .modal-content {
-    background: #fff;
-    padding: 1rem;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 400px;
-  }
-
-  /* Timeline */
-  section#timeline {
-    background: #fff0f6;
-    padding: 2rem 1rem;
-    border-radius: 16px;
-    width: 90%;
-    max-width: 600px;
-    margin: 2rem auto;
-  }
-
-  .timeline-item {
-    margin: 0.8rem 0;
-    padding: 0.8rem;
-    background: #ffeaf4;
-    border-radius: 8px;
-  }
-
-  button {
-    background: #e91e63;
-    color: #fff;
-    border: none;
-    padding: 0.7rem 1.4rem;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 1rem;
-    transition: background 0.3s;
-  }
-
-  button:hover {
-    background: #c2185b;
-  }
-
-  footer {
-    padding: 2rem;
-    font-size: 0.9rem;
-    color: #777;
-  }
-
+:root{ --bg:#fff0f6; --pink:#ff7fbf; --muted:#6b6b6b; --card:#ffffffcc; --accent:#ff6fa3; --radius:18px; --max-width:1100px; }
+html,body,#app{height:100%;}
+body{ margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); color:#333; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; overflow-x:hidden; }
+/* full-screen container */
+.wrap{ min-height:100vh; display:flex; flex-direction:column; align-items:stretch; }
+header{ display:flex; align-items:center; justify-content:space-between; padding:14px; gap:12px; position:relative; z-index:40; }
+h1{margin:0;font-size:1.5rem;color:var(--accent);}
+nav{display:flex;gap:8px;flex-wrap:wrap;}
+.tab-btn{ background:rgba(255,255,255,0.85); border:1px solid rgba(0,0,0,0.06); padding:8px 12px; border-radius:10px; cursor:pointer; font-weight:600; font-size:0.95rem; }
+.tab-btn.active{background:var(--pink);color:white;box-shadow:0 6px 18px rgba(255,127,191,0.12);}
+main{ flex:1; display:flex; justify-content:center; padding:14px; gap:14px; }
+.container{ width:100%; max-width:var(--max-width); }
+/* card */
+.card{ background:var(--card); border-radius:var(--radius); box-shadow:0 10px 30px rgba(0,0,0,0.06); padding:18px; margin-bottom:18px; }
+/* fireworks canvas sits behind content but above background emojis */
+canvas#fw{ position:fixed; left:0;top:0; width:100%;height:100%; z-index:15; pointer-events:auto; }
+/* falling emojis */
+#emoji-falls{ position:fixed; left:0;top:0; width:100%;height:100%; pointer-events:none; overflow:hidden; z-index:6; }
+.falling{ position:absolute; top:-10vh; opacity:0.95; animation:fall linear infinite; pointer-events:none; user-select:none; will-change:transform; }
+@keyframes fall{ 0%{transform:translateY(-5vh) rotate(0deg); opacity:0} 10%{opacity:1} 100%{transform:translateY(120vh) rotate(360deg); opacity:0} }
+/* top-right music control */
+.music-btn{ position:fixed; right:16px; bottom:94px; z-index:40; background:white;padding:10px;border-radius:10px;box-shadow:0 8px 18px rgba(0,0,0,0.08); }
+/* homepage layout */
+.home-grid{display:flex;flex-direction:column;gap:16px}
+.interactive-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;justify-content:center}
+/* cake */
+.cake-wrap{display:flex;flex-direction:column;align-items:center;cursor:pointer}
+.cake-caption{font-size:0.9rem;color:var(--muted);margin-top:8px}
+/* present */
+.present-btn{background:white;border-radius:14px;padding:16px;display:flex;flex-direction:column;align-items:center;box-shadow:0 12px 30px rgba(0,0,0,0.06);cursor:pointer}
+/* modal */
+.modal{ position:fixed;left:0;top:0;width:100%;height:100%; display:flex;align-items:center;justify-content:center; background:rgba(0,0,0,0.6);z-index:60; }
+.modal-content{width:92%;max-width:900px;background:white;border-radius:12px;padding:12px}
+/* carousel */
+.carousel{position:relative;overflow:hidden;border-radius:12px}
+.carousel img{width:100%;height:360px;object-fit:cover;display:block}
+.carousel .controls{display:flex;justify-content:space-between;margin-top:8px;align-items:center}
+/* timeline */
+.timeline-visual{border-left:3px solid rgba(255,127,191,0.28);padding-left:14px}
+.timeline-item{position:relative;margin-bottom:20px;padding-left:20px}
+.timeline-item::before{content:'';position:absolute;left:-45px;top:2px;width:66px;height:28px;border-radius:999px;background:white;display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:700}
+/* letter */
+textarea.letter{width:100%;height:56vh;padding:14px;border-radius:12px;border:1px solid rgba(0,0,0,0.06);resize:vertical;font-size:1rem}
+/* footer signature */
+.signature{margin-top:12px;text-align:right;color:var(--accent);font-weight:700}
+/* small screen adjustments */
+@media (min-width:900px){ .home-grid{flex-direction:row} .carousel img{height:480px} .interactive-row{justify-content:space-between} }
+@media (max-width:520px){ h1{font-size:1.15rem} .tab-btn{padding:8px 10px;font-size:0.88rem} .carousel img{height:260px} }
+/* small helpers */
+.muted{color:var(--muted)}
+.btn{cursor:pointer;padding:8px 12px;border-radius:10px;border:none;background:var(--accent);color:white;font-weight:700}
+.btn.secondary{background:white;border:1px solid rgba(0,0,0,0.06);color:#333}
+.flex{display:flex}
+.gap{gap:10px}
 </style>
 </head>
 <body>
-
+<div id="app" class="wrap">
+<!-- falling emojis -->
+<div id="emoji-falls"></div>
+<!-- background canvas fireworks -->
+<canvas id="fw"></canvas>
 <header>
-  <h1>🎉 Happy Birthday, Mom! 🎂</h1>
-  <p>Wishing you joy, love, and laughter today and always ❤️</p>
+<h1>Happy Birthday, Mummy 🎉</h1>
+<nav id="nav">
+<button class="tab-btn active" data-tab="home">Our Personal Message</button>
+<button class="tab-btn" data-tab="memories">Our Memories</button>
+<button class="tab-btn" data-tab="timeline">Timeline of Our Precious Mummy</button>
+<button class="tab-btn" data-tab="letter">Heartfelt Letter</button>
+</nav>
 </header>
-
-<!-- Cake Section -->
-<div id="cake">
-  <svg id="cakeSVG" viewBox="0 0 260 130" width="160">
-    <!-- cake base -->
-    <rect x="40" y="70" width="180" height="40" rx="8" fill="#ff80ab"/>
-    <rect x="40" y="70" width="180" height="12" fill="#f06292"/>
-
-    <!-- candle -->
-    <rect id="candleStem" x="125" y="36" width="6" height="34" rx="2" fill="#fff"/>
-    <g id="flame">
-      <ellipse cx="128" cy="28" rx="8" ry="14" fill="#ffb74d">
-        <animate attributeName="cy" values="27;29;27" dur="0.6s" repeatCount="indefinite"/>
-        <animate attributeName="rx" values="7;9;7" dur="0.6s" repeatCount="indefinite"/>
-      </ellipse>
-      <ellipse cx="128" cy="24" rx="4" ry="9" fill="#fff3b0">
-        <animate attributeName="cy" values="23;25;23" dur="0.6s" repeatCount="indefinite"/>
-      </ellipse>
-    </g>
-    <g id="smoke" style="display:none">
-      <circle cx="128" cy="20" r="4" fill="rgba(150,150,150,0.6)">
-        <animate attributeName="cy" from="20" to="0" dur="1.2s" fill="freeze"/>
-        <animate attributeName="opacity" from="1" to="0" dur="1.2s" fill="freeze"/>
-      </circle>
-    </g>
-  </svg>
-  <p>Click the candle to blow it out or relight 🔥</p>
+<main>
+<div class="container">
+<!-- HOME -->
+<section id="home" class="card">
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+<div>
+<h2 style="margin:0;color:var(--accent)">Our Personal Message</h2>
+<p class="muted">Mummy, you are our sunshine. Click anywhere on the screen for fireworks. Try clicking the cake and opening the present!</p>
 </div>
-
-<!-- Present Section -->
-<section id="present">
-  <h2>🎁 A Special Surprise!</h2>
-  <div class="gift" id="giftBox"></div>
-</section>
-
-<!-- Modal for Video -->
-<div class="modal" id="videoModal">
-  <div class="modal-content">
-    <h3>💝 From Me to You</h3>
-    <video id="presentVideo" controls style="width:100%;border-radius:8px" playsinline>
-      <source src="present.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-    <button id="closeModal">Close</button>
-  </div>
+<div style="display:flex;gap:8px;align-items:center">
+<small class="muted">Tip: If audio doesn't autoplay, press Play</small>
 </div>
-
-<!-- Timeline Section -->
-<section id="timeline">
-  <h2>🕰️ Our Journey (2000–2025)</h2>
-  <div id="timelineContainer">
-    <div class="timeline-item">2000 – A beautiful beginning 🌸</div>
-    <div class="timeline-item">2005 – Fun memories and laughter 😄</div>
-    <div class="timeline-item">2010 – Adventures together ✈️</div>
-    <div class="timeline-item">2015 – Family love stronger than ever ❤️</div>
-    <div class="timeline-item">2020 – Cherishing every moment 💕</div>
-    <div class="timeline-item">2025 – Celebrating you today 🎉</div>
-  </div>
-  <button id="addMoment">➕ Add a Timeline Moment</button>
+</div>
+<div class="home-grid" style="margin-top:16px;align-items:center">
+<div style="flex:1;min-width:260px">
+<div class="cake-wrap" id="cake" title="Click the cake to blow out the candle" role="button">
+<!-- simple cake SVG -->
+<svg id="cakeSVG" width="260" height="240" viewBox="0 0 260 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<g transform="translate(8,8)">
+<rect x="16" y="100" width="220" height="90" rx="16" fill="#ffdbe9" stroke="#ffb6d9" stroke-width="3"/>
+<rect x="42" y="70" width="176" height="40" rx="12" fill="#fff6f9" stroke="#ffdbe6" stroke-width="2"/>
+<!-- candle -->
+<rect id="candleStem" x="125" y="36" width="6" height="34" rx="2" fill="#fff"/>
+<g id="flame">
+<ellipse cx="128" cy="28" rx="8" ry="14" fill="#ffb74d"/>
+<ellipse cx="128" cy="24" rx="4" ry="9" fill="#fff3b0"/>
+</g>
+<g id="smoke" style="display:none">
+<text x="112" y="26" font-size="18">💨</text>
+</g>
+</g>
+</svg>
+<div class="cake-caption">Click the cake to blow the candle out</div>
+</div>
+</div>
+<div style="flex:1;min-width:260px;display:flex;flex-direction:column;align-items:center;gap:12px">
+<div class="present-btn" id="presentBtn" title="Open present">
+<div style="font-size:48px">🎁</div>
+<div style="margin-top:8px;font-weight:700;color:var(--muted)">Open Present</div>
+</div>
+<div style="width:100%;text-align:center;margin-top:6px;">
+<small class="muted">With love from Vineesh and Sudeepti</small>
+</div>
+</div>
+</div>
 </section>
-
-<!-- Music -->
-<section>
-  <h2>🎶 Play Some Music!</h2>
-  <audio id="bgAudio" src="bday-music.mp3" loop preload="auto"></audio>
-  <button id="playMusic">Play Music</button>
+<!-- MEMORIES -->
+<section id="memories" class="card" style="display:none">
+<h2 style="color:var(--accent);margin:0 0 8px 0;">Our Memories</h2>
+<p class="muted">A carousel of our favourite moments. Replace these sample images in your repo later.</p>
+<div class="carousel" id="carousel" style="margin-top:12px;">
+<div id="slides" style="position:relative">
+<img id="slideImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='700'><rect width='100%' height='100%' fill='%23ffdfe9'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='60' fill='%23ff6fa3'>Memory%201</text></svg>" alt="memory"/>
+</div>
+<div class="controls">
+<button class="btn secondary" id="prev">Prev</button>
+<div class="muted" id="slideIndex">1 / 3</div>
+<button class="btn" id="next">Next</button>
+</div>
+</div>
+<div style="margin-top:12px;text-align:right">
+<small class="muted">With love from Vineesh and Sudeepti</small>
+</div>
 </section>
-
-<footer>
-  Made with ❤️ by Vineesh
+<!-- TIMELINE -->
+<section id="timeline" class="card" style="display:none">
+<h2 style="color:var(--accent);margin:0 0 8px 0;">Timeline of Our Precious Mummy</h2>
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+<div style="flex:1;min-width:260px" class="timeline-visual" id="timelineVisual">
+<!-- timeline items will be injected here -->
+</div>
+<div style="width:320px;min-width:260px;background:rgba(255,255,255,0.9);padding:12px;border-radius:12px;box-shadow:0 8px 18px rgba(0,0,0,0.04)">
+<h3 style="margin:0 0 8px 0">Add a timeline moment</h3>
+<form id="timelineForm">
+<input name="year" placeholder="Year (e.g. 1995)" style="width:100%;padding:10px;margin-bottom:8px;border-radius:8px;border:1px solid #eee" required/>
+<input name="title" placeholder="Title" style="width:100%;padding:10px;margin-bottom:8px;border-radius:8px;border:1px solid #eee" required/>
+<input name="image" placeholder="Image URL (optional)" style="width:100%;padding:10px;margin-bottom:8px;border-radius:8px;border:1px solid #eee"/>
+<textarea name="note" placeholder="Short note" style="width:100%;padding:10px;height:88px;border-radius:8px;border:1px solid #eee"></textarea>
+<div style="display:flex;gap:8px;margin-top:8px">
+<button class="btn" type="submit">Add</button>
+<button class="btn secondary" type="button" id="clearTimeline">Clear</button>
+</div>
+</form>
+</div>
+</div>
+<div style="margin-top:8px;text-align:right">
+<small class="muted">With love from Vineesh and Sudeepti</small>
+</div>
+</section>
+<!-- LETTER -->
+<section id="letter" class="card" style="display:none">
+<h2 style="color:var(--accent);margin:0 0 8px 0;">Heartfelt Letter</h2>
+<p class="muted">Write a long thoughtful letter for Mummy. Copy or download when you're done.</p>
+<textarea id="letterBox" class="letter">Dear Mummy, Happy Birthday! We love you so much. Thank you for everything you do — your warmth, your guidance, and your endless love. ...</textarea>
+<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+<button class="btn secondary" id="copyLetter">Copy</button>
+<button class="btn" id="downloadLetter">Download</button>
+</div>
+<div style="margin-top:12px;text-align:right">
+<small class="muted">With love from Vineesh and Sudeepti</small>
+</div>
+</section>
+</div>
+</main>
+<!-- Present modal (hidden) -->
+<div id="presentModal" class="modal" style="display:none;">
+<div class="modal-content">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+<h3 style="margin:0;color:var(--accent)">A Surprise for Mummy</h3>
+<button id="closePresent" class="btn secondary">Close</button>
+</div>
+<video id="presentVideo" controls style="width:100%;border-radius:8px" playsinline>
+<source src="present.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video>
+</div>
+</div>
+<!-- bottom footer small -->
+<footer style="padding:12px;text-align:center;font-size:0.92rem;color:var(--muted);z-index:46">
+Made with ❤️ for Mummy — Vineesh & Sudeepti
 </footer>
+<!-- Music control -->
+<div class="music-btn" id="musicControl">
+<audio id="bgAudio" src="bday-music.mp3" loop preload="auto"></audio>
+<button id="toggleMusic" class="btn">Play Music</button>
+</div>
+</div>
 
 <script>
-  // ---------- Candle ----------
-  (function(){
-    const cake = document.getElementById('cake');
-    const flame = document.getElementById('flame');
-    const smoke = document.getElementById('smoke');
-    let lit = true;
+// ---------- Tabs ----------
+(function(){
+const tabs = document.querySelectorAll('.tab-btn');
+const sections = { home:document.getElementById('home'), memories:document.getElementById('memories'), timeline:document.getElementById('timeline'), letter:document.getElementById('letter') };
+function show(tab){ for(const t of tabs){ t.classList.toggle('active', t.dataset.tab === tab); } for(const key in sections){ sections[key].style.display = (key===tab)?'block':'none'; } }
+tabs.forEach(b=> b.addEventListener('click', ()=> show(b.dataset.tab)));
+show('home');
+})();
 
-    function blowOut() {
+// ---------- Cake interaction (click to blow out) ----------
+(function(){
+  const cake = document.getElementById('cake');
+  const flame = document.getElementById('flame');
+  const smoke = document.getElementById('smoke');
+  let lit = true;
+
+  function blowOut() {
+    if(lit){
+      lit = false;
       flame.style.display = 'none';
       smoke.style.display = 'block';
-      setTimeout(() => { smoke.style.display = 'none'; }, 1500);
-      lit = false;
     }
+  }
 
-    function relight() {
-      smoke.style.display = 'none';
-      flame.style.display = 'block';
-      lit = true;
-    }
+  // click cake, flame, or candle stem
+  cake.addEventListener('click', blowOut);
+  flame.addEventListener('click', blowOut);
+  document.getElementById('candleStem').addEventListener('click', blowOut);
 
-    cake.addEventListener('click', () => {
-      if (lit) blowOut();
-      else relight();
-    });
-
-    relight();
-  })();
-
-  // ---------- Present ----------
-  const giftBox = document.getElementById('giftBox');
-  const modal = document.getElementById('videoModal');
-  const closeModal = document.getElementById('closeModal');
-  const video = document.getElementById('presentVideo');
-
-  giftBox.addEventListener('click', () => {
-    modal.style.display = 'flex';
-    video.play();
-  });
-
-  closeModal.addEventListener('click', () => {
-    modal.style.display = 'none';
-    video.pause();
-  });
-
-  // ---------- Timeline ----------
-  const addMomentBtn = document.getElementById('addMoment');
-  const timelineContainer = document.getElementById('timelineContainer');
-
-  addMomentBtn.addEventListener('click', () => {
-    const year = prompt("Enter the year:");
-    const text = prompt("Enter your special moment:");
-    if (year && text) {
-      const div = document.createElement('div');
-      div.className = 'timeline-item';
-      div.textContent = `${year} – ${text}`;
-      timelineContainer.appendChild(div);
-    }
-  });
-
-  // ---------- Music ----------
-  const playMusicBtn = document.getElementById('playMusic');
-  const bgAudio = document.getElementById('bgAudio');
-  let playing = false;
-
-  playMusicBtn.addEventListener('click', () => {
-    if (!playing) {
-      bgAudio.play();
-      playMusicBtn.textContent = 'Pause Music';
-      playing = true;
-    } else {
-      bgAudio.pause();
-      playMusicBtn.textContent = 'Play Music';
-      playing = false;
-    }
-  });
+  // start lit
+  flame.style.display = 'block';
+  smoke.style.display = 'none';
+})();
 </script>
 </body>
 </html>
