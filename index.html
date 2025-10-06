@@ -633,5 +633,28 @@ Happy Birthday! We love you so much. Thank you for everything you do — your wa
       });
     })();
   </script>
+
+   <!-- CSS to connect visibility of main sections to radios (pure CSS tabs) -->
+    <style>
+      /* hide all main <section.card> by default, then show the one matching the checked radio */
+      /* We'll use the fact that radios are before main in DOM; use general sibling selectors */
+      /* Note: ordering is header (radios), then main. We'll hide/show internal blocks by ID using :checked ~ main ... */
+      /* This technique requires the radios to be before the main content (they are in header). */
+      #tab-home:checked ~ main .container section.card { display:none; }
+      /* show only the first section when home checked (we rely on DOM order: there are 4 sections; we show them by index) */
+      #tab-home:checked ~ main .container > section:nth-of-type(1) { display:block; }
+      #tab-mem:checked ~ main .container section.card { display:none; }
+      #tab-mem:checked ~ main .container > section:nth-of-type(2) { display:block; }
+      #tab-tl:checked ~ main .container section.card { display:none; }
+      #tab-tl:checked ~ main .container > section:nth-of-type(3) { display:block; }
+      #tab-letter:checked ~ main .container section.card { display:none; }
+      #tab-letter:checked ~ main .container > section:nth-of-type(4) { display:block; }
+
+      /* Show candle smoke/flame control via checkbox sibling selector (already used) */
+      /* The candle checkbox is inside the Home section; we target the SVG group via CSS inlined above */
+      /* NOTE: browser behavior: the smoke element is present and will show when box checked due to the earlier rules. */
+    </style>
+
+  </div>
 </body>
 </html>
