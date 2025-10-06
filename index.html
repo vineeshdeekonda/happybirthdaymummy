@@ -109,11 +109,14 @@
       100%{transform:translateY(120vh) rotate(360deg); opacity:0}
     }
 
-      <!-- Music button -->
-  <button onclick="playMusic()">🎶 Play Music</button>
-  <audio id="bgMusic" loop>
-    <source src="Adigaa.mp3" type="audio/mpeg">
-  </audio>
+    /* top-right music control */
+    .music-btn{
+      position:fixed;
+      right:16px;
+      bottom:94px;
+      z-index:40;
+      background:white;padding:10px;border-radius:10px;box-shadow:0 8px 18px rgba(0,0,0,0.08);
+    }
 
     /* homepage layout */
     .home-grid{display:flex;flex-direction:column;gap:16px}
@@ -338,12 +341,6 @@ Happy Birthday! We love you so much. Thank you for everything you do — your wa
   </div>
 
   <script>
-    // ---------- Music ----------
-    function playMusic() {
-      const music = document.getElementById("bgMusic");
-      music.play();
-    }
-    
     // ---------- Tabs ----------
     (function(){
       const tabs = document.querySelectorAll('.tab-btn');
