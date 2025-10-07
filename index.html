@@ -272,6 +272,20 @@
             <div style="flex:1;min-width:260px" class="timeline-visual" id="timelineVisual">
               <!-- timeline items will be injected here -->
             </div>
+           
+            <div style="width:320px;min-width:260px;background:rgba(255,255,255,0.9);padding:12px;border-radius:12px;box-shadow:0 8px 18px rgba(0,0,0,0.04)">
+  <h3 style="margin:0 0 8px 0">Add a timeline moment</h3>
+  <form id="timelineForm">
+    <input name="year" placeholder="Year (e.g. 1995)" ... />
+    <input name="title" placeholder="Title" ... />
+    <input name="image" placeholder="Image URL (optional)" ... />
+    <textarea name="note" placeholder="Short note" ... ></textarea>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn" type="submit">Add</button>
+      <button class="btn secondary" type="button" id="clearTimeline">Clear</button>
+    </div>
+  </form>
+</div>
           </div>
 
           <div style="margin-top:8px;text-align:right">
@@ -475,16 +489,16 @@ Happy Birthday! We love you so much. Thank you for everything you do — your wa
     (function(){
       // three sample inline SVG placeholders as default slides; you can replace with "/images/memory1.jpg" etc.
       const slides = [
-       "images/memory1.jpg",
-       "images/memory2.jpg",
-       "images/memory3.jpg",
-       "images/memory4.jpg",
-       "images/memory5.jpg",
-       "images/memory6.jpg",
-       "images/memory7.jpg",
-       "images/memory8.jpg",
-       "images/memory9.jpg",
-       "images/memory10.jpg"
+       "images/memory1.jpeg",
+       "images/memory2.jpeg",
+       "images/memory3.jpeg",
+       "images/memory4.jpeg",
+       "images/memory5.jpeg",
+       "images/memory6.jpeg",
+       "images/memory7.jpeg",
+       "images/memory8.jpeg",
+       "images/memory9.jpeg",
+       "images/memory10.jpeg"
       ];
       let idx=0;
       const img = document.getElementById('slideImg');
