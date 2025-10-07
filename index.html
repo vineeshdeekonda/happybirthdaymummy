@@ -245,7 +245,7 @@
         <!-- MEMORIES -->
         <section id="memories" class="card" style="display:none">
           <h2 style="color:var(--accent);margin:0 0 8px 0;">Our Memories</h2>
-          <p class="muted">A carousel of our favourite moments.</p>
+          <p class="muted">A carousel of our favourite moments. Replace these sample images in your repo later.</p>
 
           <div class="carousel" id="carousel" style="margin-top:12px;">
             <!-- sample embedded placeholder images (these are inline SVG data URLs so the page works immediately) -->
@@ -272,7 +272,7 @@
             <div style="flex:1;min-width:260px" class="timeline-visual" id="timelineVisual">
               <!-- timeline items will be injected here -->
             </div>
-           
+
             <div style="width:320px;min-width:260px;background:rgba(255,255,255,0.9);padding:12px;border-radius:12px;box-shadow:0 8px 18px rgba(0,0,0,0.04)">
   <h3 style="margin:0 0 8px 0">Add a timeline moment</h3>
   <form id="timelineForm">
@@ -296,12 +296,19 @@
         <!-- LETTER -->
         <section id="letter" class="card" style="display:none">
   <h2 style="color:var(--accent);margin:0 0 8px 0;">Heartfelt Letter</h2>
+  <p class="muted">We love youuuu mummyyyyyyy.</p>
+  
+  <textarea 
+    id="letterBox" 
+    class="letter" 
+    placeholder="Dear Mummy, 
   <p class="muted">Dear Mummy, 
 Thank you for all of the memories that you have given to both of us, we are really grateful to have you as my mother and I am thrilled to say that you deserve this day a lot!
 Ever since we were young, you were a hardworking, kind and an encouraging mother who have always pushed us to achieve and corrected us to succeed. I am so honoured to have you as our mother who is patient, understanding, amusing and beautiful. 
 
 I want your day to be enlightened today with blooms of vibrant flowers, peace, harmony and of course spending time with us! 
 When we both get older, we will never forget the things that you have done for us and all the fun that we had together such as cherishing yor birthday, going out to retaurants, cracking jokes and much more. 
+I wish you a very happy birthday Mummy!!!!!" 
 I wish you a very happy birthday Mummy!!!!!</p>
   
   <textarea 
@@ -428,70 +435,31 @@ I wish you a very happy birthday Mummy!!!!!</p>
       });
     })();
 
-   <!-- Cake and Candle -->
-<div class="cake">
-  <input type="checkbox" id="blow" hidden>
-  
-  <label for="blow" class="candle">
-    <div class="flame"></div>
-    <div class="smoke"></div>
-  </label>
-</div>
-
-<style>
-.cake {
-  text-align: center;
-  margin-top: 20px;
-}
-
-/* Candle body */
-.candle {
-  display: inline-block;
-  width: 20px;
-  height: 60px;
-  background: #fff0a5;
-  border-radius: 6px;
-  position: relative;
-  cursor: pointer;
-}
-
-/* Flame */
-.flame {
-  width: 12px;
-  height: 20px;
-  background: orange;
-  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-  position: absolute;
-  top: -22px;
-  left: 50%;
-  transform: translateX(-50%);
-  box-shadow: 0 0 15px 4px orange;
-  transition: opacity 0.4s;
-}
-
-/* Smoke */
-.smoke {
-  width: 12px;
-  height: 20px;
-  background: gray;
-  border-radius: 50%;
-  position: absolute;
-  top: -22px;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: opacity 0.4s;
-}
-
-/* When you click (checkbox toggled) */
-#blow:checked + .candle .flame {
-  opacity: 0;
-}
-
-#blow:checked + .candle .smoke {
-  opacity: 1;
-}
-</style>
+    // ---------- Cake interaction ----------
+    (function(){
+      const cake = document.getElementById('cake');
+      const flame = document.getElementById('flame');
+      const smoke = document.getElementById('smoke');
+      let lit = true;
+      cake.addEventListener('click', ()=>{
+        if(!lit){
+          // relight after a moment if desired; here we toggle to lit on second click
+          lit = true;
+          flame.style.display = 'block';
+          smoke.style.display = 'none';
+          return;
+        }
+        // blow out
+        lit = false;
+        flame.style.display = 'none';
+        smoke.style.display = 'block';
+        // small puff particles at candle location
+        // optional: create a few fireworks puffs near candle
+      });
+      // start lit
+      flame.style.display = 'block';
+      smoke.style.display = 'none';
+    })();
 
     // ---------- Present modal ----------
     (function(){
