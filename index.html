@@ -272,20 +272,6 @@
             <div style="flex:1;min-width:260px" class="timeline-visual" id="timelineVisual">
               <!-- timeline items will be injected here -->
             </div>
-
-            <div style="width:320px;min-width:260px;background:rgba(255,255,255,0.9);padding:12px;border-radius:12px;box-shadow:0 8px 18px rgba(0,0,0,0.04)">
-              <h3 style="margin:0 0 8px 0">Add a timeline moment</h3>
-              <form id="timelineForm">
-                <input name="year" placeholder="Year (e.g. 1995)" style="width:100%;padding:10px;margin-bottom:8px;border-radius:8px;border:1px solid #eee" required/>
-                <input name="title" placeholder="Title" style="width:100%;padding:10px;margin-bottom:8px;border-radius:8px;border:1px solid #eee" required/>
-                <input name="image" placeholder="Image URL (optional)" style="width:100%;padding:10px;margin-bottom:8px;border-radius:8px;border:1px solid #eee"/>
-                <textarea name="note" placeholder="Short note" style="width:100%;padding:10px;height:88px;border-radius:8px;border:1px solid #eee"></textarea>
-                <div style="display:flex;gap:8px;margin-top:8px">
-                  <button class="btn" type="submit">Add</button>
-                  <button class="btn secondary" type="button" id="clearTimeline">Clear</button>
-                </div>
-              </form>
-            </div>
           </div>
 
           <div style="margin-top:8px;text-align:right">
@@ -300,11 +286,6 @@
           <textarea id="letterBox" class="letter">Dear Mummy,
 
 Happy Birthday! We love you so much. Thank you for everything you do — your warmth, your guidance, and your endless love. ...</textarea>
-
-          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
-            <button class="btn secondary" id="copyLetter">Copy</button>
-            <button class="btn" id="downloadLetter">Download</button>
-          </div>
 
           <div style="margin-top:12px;text-align:right">
             <small class="muted">With love from Vineesh and Sudeepti</small>
@@ -494,9 +475,16 @@ Happy Birthday! We love you so much. Thank you for everything you do — your wa
     (function(){
       // three sample inline SVG placeholders as default slides; you can replace with "/images/memory1.jpg" etc.
       const slides = [
-        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='700'><rect width='100%' height='100%' fill='%23ffdfe9'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='60' fill='%23ff6fa3'>Memory%201</text></svg>",
-        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='700'><rect width='100%' height='100%' fill='%23fff0f0'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='60' fill='%23ff8fbf'>Memory%202</text></svg>",
-        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='700'><rect width='100%' height='100%' fill='%23fff9f0'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='60' fill='%23ff6f9f'>Memory%203</text></svg>"
+       "images/memory1.jpg",
+       "images/memory2.jpg",
+       "images/memory3.jpg",
+       "images/memory4.jpg",
+       "images/memory5.jpg",
+       "images/memory6.jpg",
+       "images/memory7.jpg",
+       "images/memory8.jpg",
+       "images/memory9.jpg",
+       "images/memory10.jpg"
       ];
       let idx=0;
       const img = document.getElementById('slideImg');
@@ -524,8 +512,12 @@ Happy Birthday! We love you so much. Thank you for everything you do — your wa
         const raw = localStorage.getItem(storageKey);
         try{
           const arr = raw? JSON.parse(raw) : [
-            {year:'1992', title:'Born', note:'The day our mummy arrived', image:''},
-            {year:'2015', title:'Graduation', note:'Proud moment', image:''}
+            {year:'1972', title:'Born', note:'The day our mummy arrived', image:'images/born.jpeg'},
+            {year:'1996', title:'Graduation', note:'Proud moment', image:'images/college.jpeg'},
+            {year:'1998', title:'Went to USA', note:'Happy days', image:'images/usa.jpeg'},
+            {year:'2001', title:'Your daughter was born', note:'The entrance of the fun sibling', image:'images/sudeepti.jpeg'},
+            {year:'2010', title:'Your son was born', note:'The entrance of the nice sibling', image:'images/vineesh.jpeg'},
+            {year:'2018', title:'Best job ever', note:'The day our mummys hardwork paid off', image:'images/job.jpg'}
           ];
           render(arr);
         }catch(e){
